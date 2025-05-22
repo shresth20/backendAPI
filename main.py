@@ -60,7 +60,7 @@ def sort_patient(sort_by: str = Query(..., discription='sort patients by height,
     return sorted_data
 
 # update/patient:id
-
+3
 # delete/patient:id
 
 
