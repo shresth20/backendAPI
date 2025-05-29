@@ -48,5 +48,15 @@
     "weight": 75,
     "bmi": 31.22,
     "verdict": "Obese"
+  },
+  "P006": {
+    "name": "joy",
+    "city": "Varanshi",
+    "gender": "Male",
+    "age": 20,
+    "height": 1.5,
+    "weight": 55.0,
+    "bmi": 24.44,
+    "verdict": "Normal"
   }
 }

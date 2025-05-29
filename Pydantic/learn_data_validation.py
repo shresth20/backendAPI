@@ -1,4 +1,4 @@
-from pydantic import BaseModel, AnyUrl, EmailStr, Field, field_validator, model_validator, computed_field 
+from pydantic import BaseModel, AnyUrl, EmailStr, Field, field_validator, model_validator, computed_field, constr 
 from typing import List, Dict, Optional, Annotated 
 
 # user data collected by client side
@@ -8,9 +8,17 @@ data = {'name': 'Joy',
         'age': 20, 
         'weight': 50.5,
         'height': 1.79,  
-        'contact_no':{'phone1':'9100202', 'phone2':'8927622'}, }
+        'contact_no':{'phone1':'9100202', 'phone2':'8927622'}, 
+        'address': {'city':'lucknow', 'pincode': 226001, 'state':'uttar paradesh'}}
 
-# Type validation
+
+# nested model- if we use a model as field in other model 
+class Address(BaseModel):
+    city: Annotated[str, Field(max_length=20)]
+    pincode: Annotated[int, constr(strict=True, min_length=6, max_length=6)]
+    state: Annotated[str, Field(max_length=20)]
+
+# Data Type validation
 class Patient(BaseModel):
     name: Annotated[str, Field(max_length=50, title='Patient name', description='Enter patient name in 50 chars.', example=['Joy', 'Binod'])] 
     email: Annotated[EmailStr, Field(title='Enter patient email id')]
@@ -20,7 +28,9 @@ class Patient(BaseModel):
     height: Annotated[float, Field(title='Enter patient body height in Meters', gt=0, strict=True)]
     married: Annotated[Optional[bool], Field(default=False, description='Entre True if patient is married')]  
     allergies: Annotated[Optional[List[str]], Field(default=None, max_length=5)]  
-    contact_no:Dict[str, str]
+    contact_no: Dict[str, str]
+    # address use as nested model
+    address: Annotated[Address, Field(title='Enter patient address')]
 
     # varify spacific domain mail
     @field_validator('email')
@@ -52,12 +62,7 @@ class Patient(BaseModel):
     def bmi(self)->float:
         bmi = round(self.weight/(self.height**2),2)
         return bmi
-
-
-
-
-# Here patient_type var store correct/valid data which we expacted
-patient_type = Patient(**data)
+    
 
 # Inserting data into database
 def insert_patient_data(pat: Patient):
@@ -66,6 +71,35 @@ def insert_patient_data(pat: Patient):
     weight = pat.weight
     height = pat.height
     file = pat.file_drive
-    print(name, age, weight, height,f"BMI is: {pat.bmi}", pat.contact_no, pat.married, ':Data Inserted Successfully')
+    bmi = f"BMI is: {pat.bmi}"
+    contact =pat.contact_no
+    married = pat.married
+    address = pat.address
+    address_pin = pat.address.pincode
+    print(name, age, weight, height, bmi, address,address_pin, ':Data Inserted Successfully')
  
+ 
+# Patient data are sended for validation to Patient model
+patient_type = Patient(**data)
+
+# insert function called
 insert_patient_data(patient_type) 
+
+# if doctor want to see his patients data on his appliciton, so we can send json data formate to client side !!
+patient_json = patient_type.model_dump_json()
+print("JSON FORMATE DATA:",patient_json)
+
+
+# Better organization of related data (e.g., vitals, address, insurance)
+# Reusability: Use Vitals in multiple models (e.g., Patient, MedicalRecord)
+# Readability: Easier for developers and API consumers to understand
+# Validation: Nested models are validated automatically—no extra work needed
+
+
+
+
+# DATA FLOW
+# [data collect from client side] -> [sent to Validators to Verify data/types] -> [varified data stored in Database]
+
+# Role of API in DATA FLOW
+# api's handle all client request and server response, make connection between client <-> server manage dataflow
