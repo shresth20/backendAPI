@@ -11,7 +11,8 @@ Pydantic is the most widely used data validation library for Python.
 
 **WorkFlow:** `ML-Model (Model.pkl) <-> API (FastAPI) <-> Frontend (Streamlit)`
 
-**Docker:** Now I Dockerized this small project then I will upload it on AWS 
+**Docker:** Now I Dockerized this small project then I will upload it on AWS   git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
 
 
 > uvicorn main:app --reload  # run command
