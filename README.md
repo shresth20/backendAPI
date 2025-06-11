@@ -9,8 +9,9 @@ Pydantic is the most widely used data validation library for Python.
 ## Serveing ML model with FastAPI:
 **Folder:** [ML_api](backendAPI/ML_api)
 
-**WorkFlow:** ML-Model (Model.pkl) <-> API (FastAPI) <-> Frontend (Streamlit)
+**WorkFlow:** `ML-Model (Model.pkl) <-> API (FastAPI) <-> Frontend (Streamlit)`
 
+**Docker:** Now I Dockerized this small project then I will upload it on AWS 
 
 
 > uvicorn main:app --reload  # run command
